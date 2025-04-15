@@ -1,0 +1,11 @@
+# ID do arquivo no Google Drive
+$fileId = "1laVn-rI1ucwi1YMxqf81ftpql32u6NP1"
+
+# Nome do arquivo de saída
+$output = "Office_2016-19.zip"
+
+# URL para fazer o download direto (bypass da tela de visualização)
+$url = "https://drive.google.com/uc?export=download&id=$fileId"
+
+# Realiza o download
+Invoke-WebRequest -Uri $url -OutFile $output
