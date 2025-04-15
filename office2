@@ -1,0 +1,11 @@
+# get-office.ps1
+
+# URL do novo servidor (freeddns)
+$url = "http://192.168.1.20:42253/s/y5GFioPYmd3JSZf/download/Office_2016%E2%80%9319.zip"
+$outFile = "Office_2016-19.zip"
+
+Write-Host "🔽 Baixando $outFile do servidor..." -ForegroundColor Cyan
+
+Invoke-WebRequest -Uri $url -OutFile $outFile -UseBasicParsing
+
+Write-Host "✅ Download concluído: $outFile" -ForegroundColor Green
