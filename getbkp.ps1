@@ -1,13 +1,10 @@
 # Check massgrave.dev for more details
-
-write-host
 Write-Host "The current command (irm https://massgrave.dev/get | iex) will be retired in the future."
 Write-Host -ForegroundColor Green "Use the new command (irm https://get.activated.win | iex) moving forward."
-write-host
 
 $troubleshoot = 'https://massgrave.dev/troubleshoot'
+
 if ($ExecutionContext.SessionState.LanguageMode.value__ -ne 0) {
-    $ExecutionContext.SessionState.LanguageMode
     Write-Host "Windows PowerShell is not running in Full Language Mode."
     Write-Host "Help - https://gravesoft.dev/fix_powershell" -ForegroundColor White -BackgroundColor Blue
     return
@@ -21,17 +18,18 @@ function Check3rdAV {
     }
 }
 
-function CheckFile { 
-    param ([string]$FilePath) 
-    if (-not (Test-Path $FilePath)) { 
+function CheckFile {
+    param ([string]$FilePath)
+    if (-not (Test-Path $FilePath)) {
         Check3rdAV
         Write-Host "Failed to create MAS file in temp folder, aborting!"
         Write-Host "Help - $troubleshoot" -ForegroundColor White -BackgroundColor Blue
-        throw 
-    } 
+        throw
+    }
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 $URLs = @(
     'https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/313f240448953cd5fe3c5631f4e4de502f23fc9a/MAS/All-In-One-Version-KL/MAS_AIO.cmd',
     'https://dev.azure.com/massgrave/Microsoft-Activation-Scripts/_apis/git/repositories/Microsoft-Activation-Scripts/items?path=/MAS/All-In-One-Version-KL/MAS_AIO.cmd&versionType=Commit&version=313f240448953cd5fe3c5631f4e4de502f23fc9a',
@@ -39,7 +37,10 @@ $URLs = @(
 )
 
 foreach ($URL in $URLs | Sort-Object { Get-Random }) {
-    try { $response = Invoke-WebRequest -Uri $URL -UseBasicParsing; break } catch {}
+    try {
+        $response = Invoke-WebRequest -Uri $URL -UseBasicParsing
+        break
+    } catch {}
 }
 
 if (-not $response) {
@@ -65,10 +66,10 @@ if ($hash -ne $releaseHash) {
 
 # Check for AutoRun registry which may create issues with CMD
 $paths = "HKCU:\SOFTWARE\Microsoft\Command Processor", "HKLM:\SOFTWARE\Microsoft\Command Processor"
-foreach ($path in $paths) { 
-    if (Get-ItemProperty -Path $path -Name "Autorun" -ErrorAction SilentlyContinue) { 
+foreach ($path in $paths) {
+    if (Get-ItemProperty -Path $path -Name "Autorun" -ErrorAction SilentlyContinue) {
         Write-Warning "Autorun registry found, CMD may crash! `nManually copy-paste the below command to fix...`nRemove-ItemProperty -Path '$path' -Name 'Autorun'"
-    } 
+    }
 }
 
 $rand = [Guid]::NewGuid().Guid
@@ -82,8 +83,11 @@ $chkcmd = & $env:ComSpec /c "echo CMD is working"
 if ($chkcmd -notcontains "CMD is working") {
     Write-Warning "cmd.exe is not working.`nReport this issue at $troubleshoot"
 }
-saps -FilePath $env:ComSpec -ArgumentList "/c """"$FilePath"" $args""" -Wait
+
+Start-Process -FilePath $env:ComSpec -ArgumentList "/c """"$FilePath"" $args""" -Wait
 CheckFile $FilePath
 
 $FilePaths = @("$env:SystemRoot\Temp\MAS*.cmd", "$env:USERPROFILE\AppData\Local\Temp\MAS*.cmd")
-foreach ($FilePath in $FilePaths) { Get-Item $FilePath | Remove-Item }
+foreach ($FilePath in $FilePaths) {
+    Get-Item $FilePath | Remove-Item
+}
