@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>By Adriano Rosa</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header img {
+      max-width: 80px;
+    }
+
+    h1 {
+      margin-top: 0.5rem;
+      font-size: 1.8rem;
+      color: #00ffcc;
+    }
+
+    .link-form, .link-list {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .link-form input {
+      width: 80%;
+      padding: 0.7rem;
+      margin-right: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .link-form button {
+      padding: 0.7rem 1rem;
+      background-color: #00ffcc;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .link-form button:hover {
+      background-color: #00ccaa;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1f1f1f;
+      margin: 0.5rem 0;
+      padding: 0.7rem;
+      border-radius: 6px;
+      word-break: break-word;
+    }
+
+    li a {
+      color: #00ffcc;
+      text-decoration: none;
+    }
+
+    li button {
+      background: transparent;
+      border: none;
+      color: #ff4d4d;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .link-form input {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      .link-form button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png" alt="Logo" />
+    <h1>By Adriano Rosa</h1>
+  </header>
+
+  <div class="link-form">
+    <input type="text" id="linkInput" placeholder="Insira o link completo (https://...)" />
+    <button onclick="addLink()">Adicionar</button>
+  </div>
+
+  <div class="link-list">
+    <ul id="links"></ul>
+  </div>
+
+  <script>
+    const linkInput = document.getElementById('linkInput');
+    const linksUl = document.getElementById('links');
+
+    function addLink() {
+      const url = linkInput.value.trim();
+      if (url && isValidURL(url)) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.textContent = url;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remover';
+        removeBtn.onclick = () => li.remove();
+
+        li.appendChild(a);
+        li.appendChild(removeBtn);
+        linksUl.appendChild(li);
+
+        linkInput.value = '';
+      } else {
+        alert('Insira um link válido começando com https://');
+      }
+    }
+
+    function isValidURL(string) {
+      try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch (_) {
+        return false;
+      }
+    }
+  </script>
+</body>
+</html>
